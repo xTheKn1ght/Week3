@@ -17,6 +17,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/public', express.static(path.join(__dirname, '../public')));
 app.use('/api/v1', userRouter);
-app.use('/api/v1', api);
+
 
 export default app;

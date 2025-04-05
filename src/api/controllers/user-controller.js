@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import {
   listAllUsers,
   findUserById,
@@ -24,12 +25,32 @@ const getUserById = async (req, res) => {
   }
 };
 
+
 const postUser = async (req, res) => {
   try {
-    const result = await addUser(req.body);
-    result ? res.status(201).json({message: 'New user added.', result}) : res.sendStatus(400);
+    const { name, username, email, password } = req.body;
+
+    if (!name || !username || !email || !password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    const result = await addUser({
+      name,
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    if (result.user_id) {
+      res.status(201).json({ message: 'User created', result });
+    } else {
+      res.sendStatus(400);
+    }
   } catch (err) {
-    res.status(500).json({error: err.message});
+    console.error('Error in postUser:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -51,4 +72,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export {getUser, getUserById, postUser, putUser, deleteUser};
+export {getUser, getUserById, postUser, putUser, deleteUser };

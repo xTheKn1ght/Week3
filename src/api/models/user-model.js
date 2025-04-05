@@ -10,11 +10,15 @@ const findUserById = async (id) => {
   return rows.length > 0 ? rows[0] : false;
 };
 
-const addUser = async (user) => {
-  const {name, email, passwd} = user;
-  const sql = 'INSERT INTO wsk_users (name, email, passwd) VALUES (?, ?, ?)';
-  const [result] = await promisePool.execute(sql, [name, email, passwd]);
-  return result.affectedRows > 0 ? {user_id: result.insertId} : false;
+const addUser = async (userData) => {
+  const { name, username, email, password } = userData;
+
+  const sql = `INSERT INTO wsk_users (name, username, email, password)
+               VALUES (?, ?, ?, ?)`;
+  const params = [name, username, email, password];
+
+  const [result] = await promisePool.execute(sql, params);
+  return result.insertId ? { user_id: result.insertId } : false;
 };
 
 const modifyUser = async (user, id) => {
@@ -39,4 +43,12 @@ const removeUser = async (id) => {
   }
 };
 
-export {listAllUsers, findUserById, addUser, modifyUser, removeUser};
+const getUserByUsername = async (username) => {
+  const sql = 'SELECT * FROM wsk_users WHERE username = ?';
+  const [rows] = await promisePool.execute(sql, [username]);
+
+  if (rows.length === 0) return null;
+  return rows[0];
+};
+
+export {listAllUsers, findUserById, addUser, modifyUser, removeUser, getUserByUsername };

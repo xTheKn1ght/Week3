@@ -1,5 +1,4 @@
 import express from 'express';
-import multer from 'multer';
 import {
   getCat,
   getCatById,
@@ -8,13 +7,17 @@ import {
   deleteCat,
 } from '../controllers/cat-controller.js';
 
+import multer from 'multer';
+import { createThumbnail } from '../../middlewares.js'; // 👈 import thumbnail middleware
+
+const upload = multer({ dest: 'uploads/' }); // 👈 set up multer
+
 const catRouter = express.Router();
 
-const upload = multer({ dest: 'uploads/' });
-
+// 👇 Apply upload + thumbnail middleware before controller
 catRouter.route('/')
   .get(getCat)
-  .post(upload.single('cat_image'), postCat);  // multer middleware + controller
+  .post(upload.single('cat_image'), createThumbnail, postCat); // 👈 Here’s the magic
 
 catRouter.route('/:id')
   .get(getCatById)

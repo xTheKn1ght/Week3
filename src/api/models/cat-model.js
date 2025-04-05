@@ -17,21 +17,35 @@ const catItems = [
   },
 ];
 
-const listAllCats = () => catItems;
-
-const findCatById = (id) => catItems.find((item) => item.cat_id == id);
-
-const addCat = (cat) => {
-  const { cat_name, weight, owner, filename, birthdate } = cat;
-
-  if (!cat_name || !weight || !owner || !filename || !birthdate) {
-    return {};
-  }
-
-  const newId = (catItems[0]?.cat_id || 1000) + 1;
-  catItems.unshift({ cat_id: newId, cat_name, weight, owner, filename, birthdate });
-  return { cat_id: newId };
+const listAllCats = () => {
+  return catItems;
 };
 
+const findCatById = (id) => {
+  return catItems.find((item) => item.cat_id == id);
+};
+
+const addCat = (cat) => {
+  const {
+    cat_name,
+    weight,
+    owner,
+    birthdate,
+    filename
+  } = cat;
+
+  const newId = catItems[0].cat_id + 1;
+  const newCat = {
+    cat_id: newId,
+    cat_name,
+    weight,
+    owner,
+    birthdate,
+    filename
+  };
+
+  catItems.unshift(newCat);
+  return { cat_id: newId };
+};
 
 export { listAllCats, findCatById, addCat };

@@ -1,4 +1,4 @@
-import { addCat, findCatById, listAllCats } from '../models/cat-model.js';
+import { addCat, findCatById, listAllCats } from "../models/cat-model.js";
 
 const getCat = (req, res) => {
   res.json(listAllCats());
@@ -9,18 +9,25 @@ const getCatById = (req, res) => {
   if (cat) {
     res.json(cat);
   } else {
-    res.status(404).json({ message: 'Cat not found' });
+    res.sendStatus(404);
   }
 };
 
 const postCat = (req, res) => {
-  console.log('Incoming POST body:', req.body);
+  console.log('Form Data:', req.body);
+  console.log('File Data:', req.file);
 
-  const result = addCat(req.body);
+  const catData = {
+    ...req.body,
+    filename: req.file?.filename || null,
+  };
+
+  const result = addCat(catData);
+
   if (result.cat_id) {
     res.status(201).json({ message: 'New cat added.', result });
   } else {
-    res.status(400).json({ message: 'Invalid cat data' });
+    res.sendStatus(400);
   }
 };
 

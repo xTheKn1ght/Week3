@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 import {
   getCat,
   getCatById,
@@ -9,9 +10,11 @@ import {
 
 const catRouter = express.Router();
 
+const upload = multer({ dest: 'uploads/' });
+
 catRouter.route('/')
   .get(getCat)
-  .post(postCat);
+  .post(upload.single('cat_image'), postCat);  // multer middleware + controller
 
 catRouter.route('/:id')
   .get(getCatById)

@@ -1,31 +1,19 @@
 import express from 'express';
+import api from './api/index.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const app = express()
-const port = 3000
+const app = express();
 
-/*app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})*/
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/api/v1/cat', (req, res) => {
-  const cat = {
-    cat_id: 1,
-    name: 'Jessie',
-    birthdate: '2018-04-15',
-    weight: 4.2,  // in kg
-    owner: 'Vlad',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg',
-  };
+app.use('/public', express.static(path.join(__dirname, '../public')));
 
-  res.json(cat);
-});
+app.use('/api/v1', api);
 
-app.use('/public', express.static('public'));
-
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+export default app;

@@ -19,7 +19,7 @@ const authenticateToken = (req, res, next) => {
     next();
   } catch (err) {
     console.error('JWT error:', err.message);
-    res.status(403).json({ message: 'Invalid token' });
+    res.status(403).json({ message: 'Invalid token' }); // Forbidden
   }
 };
 

@@ -51,4 +51,11 @@ const getUserByUsername = async (username) => {
   return rows[0];
 };
 
-export {listAllUsers, findUserById, addUser, modifyUser, removeUser, getUserByUsername };
+const updateUser = async (user, userId) => {
+  const sql = promisePool.format('UPDATE wsk_users SET ? WHERE user_id = ?', [user, userId]);
+  const [result] = await promisePool.execute(sql);
+  return result.affectedRows > 0 ? { message: 'User updated' } : false;
+};
+
+
+export {listAllUsers, findUserById, addUser, modifyUser, removeUser, getUserByUsername, updateUser };

@@ -1,4 +1,4 @@
-import { addCat, findCatById, listAllCats } from "../models/cat-model.js";
+import { addCat, findCatById, listAllCats, modifyCat, removeCat, removeCatAsAdmin } from "../models/cat-model.js";
 import {getCatsByOwner} from '../models/cat-model.js';
 
 const getCatsByUserId = async (req, res) => {
@@ -41,12 +41,34 @@ const postCat = (req, res) => {
   }
 };
 
-const putCat = (req, res) => {
-  res.json({ message: 'Cat item updated.' });
+const putCat = async (req, res) => {
+  const { user_id, role } = res.locals.user;
+  const result = await modifyCat(req.body, req.params.id, user_id, role);
+
+  if (!result) {
+    return res.status(403).json({ message: 'Forbidden or not found' });
+  }
+
+  res.json(result);
 };
 
-const deleteCat = (req, res) => {
-  res.json({ message: 'Cat item deleted.' });
+const deleteCat = async (req, res) => {
+  const { user_id, role } = res.locals.user;
+  const catId = req.params.id;
+
+  let result;
+
+  if (role === 'admin') {
+    result = await removeCatAsAdmin(catId);
+  } else {
+    result = await removeCat(catId, user_id);
+  }
+
+  if (!result) {
+    return res.status(403).json({ message: 'Forbidden or not found' });
+  }
+
+  res.json({ message: 'Cat deleted' });
 };
 
 export { getCat, getCatById, postCat, putCat, deleteCat, getCatsByUserId };

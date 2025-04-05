@@ -3,7 +3,7 @@ import {
   listAllUsers,
   findUserById,
   addUser,
-  modifyUser,
+  updateUser,
   removeUser,
 } from '../models/user-model.js';
 
@@ -55,12 +55,14 @@ const postUser = async (req, res) => {
 };
 
 const putUser = async (req, res) => {
-  try {
-    const result = await modifyUser(req.body, req.params.id);
-    result ? res.json(result) : res.sendStatus(400);
-  } catch (err) {
-    res.status(500).json({error: err.message});
+  const loggedInUser = res.locals.user;
+
+  if (loggedInUser.role !== 'admin' && loggedInUser.user_id !== Number(req.params.id)) {
+    return res.status(403).json({ message: 'Forbidden' });
   }
+
+  const result = await updateUser(req.body, req.params.id);
+  res.json(result);
 };
 
 const deleteUser = async (req, res) => {
@@ -72,4 +74,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export {getUser, getUserById, postUser, putUser, deleteUser };
+export {getUser, getUserById, postUser, putUser, deleteUser,  };

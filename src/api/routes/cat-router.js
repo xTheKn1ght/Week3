@@ -9,6 +9,7 @@ import {
 } from '../controllers/cat-controller.js';
 import multer from 'multer';
 import { createThumbnail } from '../../middlewares.js';
+import { authenticateToken } from '../middlewares/middlewares.js'
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -20,8 +21,8 @@ catRouter.route('/')
 
 catRouter.route('/:id')
   .get(getCatById)
-  .put(putCat)
-  .delete(deleteCat);
+  .put(authenticateToken, putCat)
+  .delete(authenticateToken, deleteCat);
 
 export default catRouter;
 

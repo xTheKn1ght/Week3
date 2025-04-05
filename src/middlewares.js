@@ -1,6 +1,5 @@
 import sharp from 'sharp';
 import path from 'path';
-import fs from 'fs';
 
 const createThumbnail = async (req, res, next) => {
   if (!req.file) {
@@ -9,9 +8,9 @@ const createThumbnail = async (req, res, next) => {
   }
 
   try {
-    const originalPath = req.file.path; // uploads/filename.jpg
-    const ext = path.extname(originalPath); // .jpg
-    const filenameNoExt = path.basename(originalPath, ext); // filename
+    const originalPath = req.file.path;
+    const ext = path.extname(originalPath);
+    const filenameNoExt = path.basename(originalPath, ext);
     const thumbPath = path.join(req.file.destination, `${filenameNoExt}_thumb.png`);
 
     await sharp(originalPath)

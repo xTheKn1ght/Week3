@@ -1,33 +1,54 @@
-import { listAllUsers, findUserById, addUser } from '../models/user-model.js';
+import {
+  listAllUsers,
+  findUserById,
+  addUser,
+  modifyUser,
+  removeUser,
+} from '../models/user-model.js';
 
-const getUser = (req, res) => {
-  res.json(listAllUsers());
-};
-
-const getUserById = (req, res) => {
-  const user = findUserById(req.params.id);
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ message: 'User not found' });
+const getUser = async (req, res) => {
+  try {
+    const users = await listAllUsers();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({error: err.message});
   }
 };
 
-const postUser = (req, res) => {
-  const newUser = addUser(req.body);
-  if (newUser.user_id) {
-    res.status(201).json({ message: 'New user added.', newUser });
-  } else {
-    res.status(400).json({ message: 'Invalid user data' });
+const getUserById = async (req, res) => {
+  try {
+    const user = await findUserById(req.params.id);
+    user ? res.json(user) : res.sendStatus(404);
+  } catch (err) {
+    res.status(500).json({error: err.message});
   }
 };
 
-const putUser = (req, res) => {
-  res.json({ message: 'User item updated.' });
+const postUser = async (req, res) => {
+  try {
+    const result = await addUser(req.body);
+    result ? res.status(201).json({message: 'New user added.', result}) : res.sendStatus(400);
+  } catch (err) {
+    res.status(500).json({error: err.message});
+  }
 };
 
-const deleteUser = (req, res) => {
-  res.json({ message: 'User item deleted.' });
+const putUser = async (req, res) => {
+  try {
+    const result = await modifyUser(req.body, req.params.id);
+    result ? res.json(result) : res.sendStatus(400);
+  } catch (err) {
+    res.status(500).json({error: err.message});
+  }
 };
 
-export { getUser, getUserById, postUser, putUser, deleteUser };
+const deleteUser = async (req, res) => {
+  try {
+    const result = await removeUser(req.params.id);
+    result ? res.json(result) : res.sendStatus(400);
+  } catch (err) {
+    res.status(500).json({error: err.message});
+  }
+};
+
+export {getUser, getUserById, postUser, putUser, deleteUser};

@@ -1,4 +1,14 @@
 import { addCat, findCatById, listAllCats } from "../models/cat-model.js";
+import {getCatsByOwner} from '../models/cat-model.js';
+
+const getCatsByUserId = async (req, res) => {
+  try {
+    const cats = await getCatsByOwner(req.params.userId);
+    res.json(cats);
+  } catch (err) {
+    res.status(500).json({error: err.message});
+  }
+};
 
 const getCat = (req, res) => {
   res.json(listAllCats());
@@ -39,4 +49,4 @@ const deleteCat = (req, res) => {
   res.json({ message: 'Cat item deleted.' });
 };
 
-export { getCat, getCatById, postCat, putCat, deleteCat };
+export { getCat, getCatById, postCat, putCat, deleteCat, getCatsByUserId };

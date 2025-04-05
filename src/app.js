@@ -24,6 +24,8 @@ app.get('/api/v1/cat', (req, res) => {
   res.json(cat);
 });
 
+app.use('/public', express.static('public'));
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
